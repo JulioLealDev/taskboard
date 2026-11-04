@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>TaskBoard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: header bar + three-lane board (stacks on phones); cards are index cards with a priority tag */
+:root {
+  --bg: #eef0ec;
+  --lane: #e2e6e0;
+  --card: #ffffff;
+  --fg: #1c2420;
+  --muted: #5d6a63;
+  --line: #cdd4cd;
+  --accent: #2f6b55;
+  --accent-fg: #ffffff;
+  --high: #b6372b; --high-bg: #fbe6e3;
+  --mid: #9a6a08; --mid-bg: #fbf0d6;
+  --low: #3d7a3a; --low-bg: #e3f1e1;
+  --shadow: 0 1px 2px rgba(28,36,32,.08), 0 2px 8px rgba(28,36,32,.06);
+  --lift: 0 12px 30px rgba(28,36,32,.22);
+  --overlay: rgba(20,26,23,.45);
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141917; --lane: #1c2320; --card: #252e2a; --fg: #e6ece8; --muted: #9aa8a0; --line: #34403a;
+  --accent: #6fbf9c; --accent-fg: #0f1a15;
+  --high: #f08a7e; --high-bg: #3d211e; --mid: #e3b65a; --mid-bg: #3a2e14; --low: #8fcf89; --low-bg: #1f3320;
+  --shadow: 0 1px 2px rgba(0,0,0,.4); --lift: 0 12px 30px rgba(0,0,0,.55); --overlay: rgba(0,0,0,.6);
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #141917; --lane: #1c2320; --card: #252e2a; --fg: #e6ece8; --muted: #9aa8a0; --line: #34403a;
+  --accent: #6fbf9c; --accent-fg: #0f1a15;
+  --high: #f08a7e; --high-bg: #3d211e; --mid: #e3b65a; --mid-bg: #3a2e14; --low: #8fcf89; --low-bg: #1f3320;
+  --shadow: 0 1px 2px rgba(0,0,0,.4); --lift: 0 12px 30px rgba(0,0,0,.55); --overlay: rgba(0,0,0,.6);
+  color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px; }
+.wrap { max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+h1 { font-family: var(--display); font-size: 30px; font-weight: 700; margin: 0; letter-spacing: -.01em; }
+.summary { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.summary b { color: var(--fg); font-weight: 600; }
+.summary .late { color: var(--high); }
+.tools { margin-left: auto; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+input, select, textarea, button { font: inherit; color: inherit; }
+.field, .tools input, .tools select { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.tools input { width: 190px; max-width: 100%; }
+.btn { border: 1px solid transparent; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; background: transparent; }
+.btn-primary { background: var(--accent); color: var(--accent-fg); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-ghost { border-color: var(--line); background: var(--card); }
+.btn-danger { background: var(--high); color: var(--card); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.lane { background: var(--lane); border-radius: 12px; padding: 12px; display: grid; gap: 10px; min-width: 0; }
+.lane-head { display: flex; align-items: center; gap: 8px; padding: 2px 4px; }
+.lane-head h2 { font-family: var(--display); font-size: 17px; font-weight: 600; margin: 0; }
+.count { font-family: var(--mono); font-size: 12px; color: var(--muted); background: var(--card); border-radius: 99px; padding: 1px 8px; }
+.lane-add { margin-left: auto; border: none; background: none; color: var(--muted); cursor: pointer; font-size: 20px; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+.lane-add:hover { color: var(--fg); background: var(--card); }
+.list { display: grid; gap: 8px; min-height: 64px; align-content: start; }
+.empty { border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px; text-align: center; color: var(--muted); font-size: 13px; }
+
+.card { background: var(--card); border-radius: 10px; padding: 12px 12px 10px; box-shadow: var(--shadow); display: grid; gap: 6px;
+  cursor: grab; touch-action: none; user-select: none; min-width: 0; }
+.card:hover .card-actions { opacity: 1; }
+.card-top { display: flex; align-items: center; gap: 8px; }
+.card h3 { font-size: 15px; font-weight: 600; margin: 0; overflow-wrap: anywhere; }
+.card p { margin: 0; color: var(--muted); font-size: 13.5px; white-space: pre-wrap; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+.card.done h3 { text-decoration: line-through; text-decoration-color: var(--muted); }
+.card-actions { margin-left: auto; display: flex; gap: 2px; opacity: .55; transition: opacity .15s; }
+@media (hover: none) { .card-actions { opacity: 1; } }
+.icon-btn { border: none; background: none; padding: 4px 6px; border-radius: 6px; cursor: pointer; color: var(--muted); font-size: 13px; }
+.icon-btn:hover { background: var(--lane); color: var(--fg); }
+.icon-btn.del:hover { color: var(--high); }
+
+.prio { font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; border-radius: 5px; padding: 2px 7px; display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.prio::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.prio.alta { color: var(--high); background: var(--high-bg); }
+.prio.media { color: var(--mid); background: var(--mid-bg); }
+.prio.baixa { color: var(--low); background: var(--low-bg); }
+.due { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.due.late { color: var(--high); font-weight: 500; }
+.due.soon { color: var(--mid); font-weight: 500; }
+
+.placeholder { border: 2px dashed var(--accent); border-radius: 10px; background: transparent; opacity: .6; }
+.ghost { position: fixed; z-index: 50; pointer-events: none; box-shadow: var(--lift); transform: rotate(1.5deg); cursor: grabbing; }
+.lane.over { outline: 2px solid var(--accent); outline-offset: -2px; }
+body.dragging { cursor: grabbing; }
+
+dialog { border: none; border-radius: 14px; padding: 0; width: min(520px, calc(100vw - 32px)); background: var(--card); color: var(--fg); box-shadow: var(--lift); }
+dialog::backdrop { background: var(--overlay); }
+.modal { padding: 20px; display: grid; gap: 14px; }
+.modal h2 { font-family: var(--display); font-size: 20px; margin: 0; }
+.row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 500; }
+.field { width: 100%; color: var(--fg); background: var(--bg); }
+textarea.field { min-height: 96px; resize: vertical; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.modal-actions .left { margin-right: auto; }
+.error { color: var(--high); font-size: 13px; margin: 0; }
+.confirm p { margin: 0; color: var(--muted); }
+
+.note { color: var(--muted); font-size: 12.5px; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 14px; z-index: 60; display: flex; gap: 12px; align-items: center; }
+.toast button { background: none; border: none; color: var(--accent); font-weight: 600; cursor: pointer; padding: 0; filter: brightness(1.3); }
+
+@media (max-width: 820px) {
+  .board { grid-template-columns: minmax(0, 1fr); }
+  .tools { margin-left: 0; width: 100%; }
+  .tools input { flex: 1; width: auto; }
+  .row { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } .ghost { transform: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>TaskBoard</h1>
+    <div class="summary" id="summary"></div>
+    <div class="tools">
+      <input id="search" type="search" placeholder="Buscar tarefa…" aria-label="Buscar tarefa">
+      <select id="filter" aria-label="Filtrar por prioridade">
+        <option value="">Todas as prioridades</option>
+        <option value="alta">Alta</option>
+        <option value="media">Média</option>
+        <option value="baixa">Baixa</option>
+      </select>
+      <button class="btn btn-primary" id="newBtn">+ Nova tarefa</button>
+    </div>
+  </header>
+
+  <main class="board" id="board"></main>
+  <div class="note">Arraste os cards para mudar a ordem ou a coluna. Tudo fica salvo neste navegador.</div>
+</div>
+
+<dialog id="editDlg">
+  <form class="modal" id="editForm" method="dialog">
+    <h2 id="editTitle">Nova tarefa</h2>
+    <label>Título
+      <input class="field" id="fTitle" maxlength="120" autocomplete="off">
+    </label>
+    <label>Descrição
+      <textarea class="field" id="fDesc" maxlength="2000"></textarea>
+    </label>
+    <div class="row">
+      <label>Prioridade
+        <select class="field" id="fPrio">
+          <option value="alta">Alta</option>
+          <option value="media">Média</option>
+          <option value="baixa">Baixa</option>
+        </select>
+      </label>
+      <label>Prazo
+        <input class="field" id="fDue" type="date">
+      </label>
+      <label>Coluna
+        <select class="field" id="fCol"></select>
+      </label>
+    </div>
+    <p class="error" id="fErr" hidden>Dê um título à tarefa.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost left" id="fDelete" hidden>Excluir</button>
+      <button type="button" class="btn btn-ghost" id="fCancel">Cancelar</button>
+      <button type="submit" class="btn btn-primary" id="fSave">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="delDlg">
+  <div class="modal confirm">
+    <h2>Excluir tarefa?</h2>
+    <p id="delText"></p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="delCancel">Cancelar</button>
+      <button type="button" class="btn btn-danger" id="delOk">Excluir</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" hidden><span id="toastMsg"></span><button id="toastUndo" hidden>Desfazer</button></div>
+
+<script>
+(function () {
+  const KEY = "taskboard.v1";
+  const COLS = [
+    { id: "todo", name: "A fazer" },
+    { id: "doing", name: "Em andamento" },
+    { id: "done", name: "Concluído" }
+  ];
+  const PRIO = { alta: "Alta", media: "Média", baixa: "Baixa" };
+
+  const iso = d => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
+  const plus = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+  const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+
+  function sample() {
+    return [
+      { id: uid(), col: "todo", title: "Exemplo: planejar sprint da semana", desc: "Listar entregas e dividir responsabilidades.", prio: "alta", due: plus(2) },
+      { id: uid(), col: "todo", title: "Exemplo: revisar orçamento", desc: "", prio: "media", due: plus(7) },
+      { id: uid(), col: "doing", title: "Exemplo: escrever documentação", desc: "Seção de instalação e primeiros passos.", prio: "media", due: plus(0) },
+      { id: uid(), col: "doing", title: "Exemplo: responder e-mails pendentes", desc: "", prio: "baixa", due: plus(-1) },
+      { id: uid(), col: "done", title: "Exemplo: configurar repositório", desc: "", prio: "baixa", due: plus(-3) }
+    ];
+  }
+
+  let tasks;
+  try { const raw = localStorage.getItem(KEY); tasks = raw ? JSON.parse(raw) : null; } catch (e) { tasks = null; }
+  if (!Array.isArray(tasks)) tasks = sample();
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(tasks)); } catch (e) {} };
+
+  const $ = id => document.getElementById(id);
+  const board = $("board");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+  function dueInfo(t) {
+    if (!t.due) return null;
+    const today = new Date(iso(new Date()) + "T00:00:00");
+    const d = new Date(t.due + "T00:00:00");
+    const days = Math.round((d - today) / 86400000);
+    const label = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "");
+    if (t.col === "done") return { cls: "", text: label };
+    if (days < 0) return { cls: "late", text: `${label} · atrasada ${-days}d` };
+    if (days === 0) return { cls: "soon", text: `${label} · vence hoje` };
+    if (days === 1) return { cls: "soon", text: `${label} · amanhã` };
+    return { cls: "", text: `${label} · em ${days}d` };
+  }
+
+  function render() {
+    const q = $("search").value.trim().toLowerCase();
+    const f = $("filter").value;
+    board.innerHTML = "";
+    for (const c of COLS) {
+      const all = tasks.filter(t => t.col === c.id);
+      const shown = all.filter(t => (!f || t.prio === f) && (!q || (t.title + " " + t.desc).toLowerCase().includes(q)));
+      const lane = document.createElement("section");
+      lane.className = "lane"; lane.dataset.col = c.id;
+      lane.innerHTML = `<div class="lane-head"><h2>${c.name}</h2><span class="count">${all.length}</span>
+        <button class="lane-add" data-add="${c.id}" title="Nova tarefa em ${c.name}" aria-label="Nova tarefa em ${c.name}">+</button></div>
+        <div class="list"></div>`;
+      const list = lane.querySelector(".list");
+      if (!shown.length) list.innerHTML = `<div class="empty">${all.length ? "Nenhuma tarefa com esse filtro" : "Solte uma tarefa aqui ou clique em +"}</div>`;
+      for (const t of shown) {
+        const di = dueInfo(t);
+        const el = document.createElement("article");
+        el.className = "card" + (t.col === "done" ? " done" : "");
+        el.dataset.id = t.id; el.tabIndex = 0;
+        el.setAttribute("aria-label", t.title);
+        el.innerHTML = `<div class="card-top"><span class="prio ${t.prio}">${PRIO[t.prio]}</span>
+            <div class="card-actions">
+              <button class="icon-btn" data-edit="${t.id}" aria-label="Editar">Editar</button>
+              <button class="icon-btn del" data-del="${t.id}" aria-label="Excluir">Excluir</button>
+            </div></div>
+          <h3>${esc(t.title)}</h3>
+          ${t.desc ? `<p>${esc(t.desc)}</p>` : ""}
+          ${di ? `<div class="card-foot"><span class="due ${di.cls}">${di.text}</span></div>` : ""}`;
+        list.appendChild(el);
+      }
+      board.appendChild(lane);
+    }
+    const open = tasks.filter(t => t.col !== "done");
+    const late = open.filter(t => { const d = dueInfo(t); return d && d.cls === "late"; }).length;
+    $("summary").innerHTML = `<b>${open.length}</b> abertas · <b>${tasks.length - open.length}</b> concluídas` +
+      (late ? ` · <b class="late">${late}</b> atrasada${late > 1 ? "s" : ""}` : "");
+  }
+
+  /* ---------- Editar / criar ---------- */
+  const dlg = $("editDlg");
+  let editing = null;
+  $("fCol").innerHTML = COLS.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+
+  function openEdit(id, col) {
+    const t = id ? tasks.find(x => x.id === id) : null;
+    editing = t ? t.id : null;
+    $("editTitle").textContent = t ? "Editar tarefa" : "Nova tarefa";
+    $("fTitle").value = t ? t.title : "";
+    $("fDesc").value = t ? t.desc : "";
+    $("fPrio").value = t ? t.prio : "media";
+    $("fDue").value = t ? (t.due || "") : "";
+    $("fCol").value = t ? t.col : (col || "todo");
+    $("fDelete").hidden = !t;
+    $("fErr").hidden = true;
+    dlg.showModal();
+    $("fTitle").focus();
+  }
+
+  $("editForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const title = $("fTitle").value.trim();
+    if (!title) { $("fErr").hidden = false; $("fTitle").focus(); return; }
+    const data = { title, desc: $("fDesc").value.trim(), prio: $("fPrio").value, due: $("fDue").value, col: $("fCol").value };
+    if (editing) {
+      const i = tasks.findIndex(x => x.id === editing);
+      const moved = tasks[i].col !== data.col;
+      Object.assign(tasks[i], data);
+      if (moved) { const [t] = tasks.splice(i, 1); tasks.push(t); }
+      toast("Tarefa atualizada");
+    } else {
+      tasks.push({ id: uid(), ...data });
+      toast("Tarefa criada");
+    }
+    save(); render(); dlg.close();
+  });
+  $("fCancel").onclick = () => dlg.close();
+  $("fDelete").onclick = () => { const id = editing; dlg.close(); askDelete(id); };
+  $("newBtn").onclick = () => openEdit(null);
+
+  /* ---------- Excluir ---------- */
+  const del = $("delDlg");
+  let pendingDel = null;
+  function askDelete(id) {
+    const t = tasks.find(x => x.id === id); if (!t) return;
+    pendingDel = id;
+    $("delText").textContent = `"${t.title}" será removida do quadro.`;
+    del.showModal(); $("delCancel").focus();
+  }
+  $("delCancel").onclick = () => del.close();
+  $("delOk").onclick = () => {
+    const i = tasks.findIndex(x => x.id === pendingDel);
+    if (i > -1) {
+      const [removed] = tasks.splice(i, 1);
+      save(); render();
+      toast("Tarefa excluída", () => { tasks.splice(Math.min(i, tasks.length), 0, removed); save(); render(); });
+    }
+    del.close();
+  };
+
+  /* ---------- Toast ---------- */
+  let toastTimer;
+  function toast(msg, undo) {
+    $("toastMsg").textContent = msg;
+    const b = $("toastUndo");
+    b.hidden = !undo;
+    b.onclick = () => { undo && undo(); $("toast").hidden = true; };
+    $("toast").hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { $("toast").hidden = true; }, undo ? 6000 : 2200);
+  }
+
+  /* ---------- Cliques ---------- */
+  board.addEventListener("click", e => {
+    const a = e.target.closest("[data-add]"); if (a) return openEdit(null, a.dataset.add);
+    const ed = e.target.closest("[data-edit]"); if (ed) return openEdit(ed.dataset.edit);
+    const dl = e.target.closest("[data-del]"); if (dl) return askDelete(dl.dataset.del);
+  });
+  board.addEventListener("dblclick", e => {
+    const c = e.target.closest(".card"); if (c && !e.target.closest("button")) openEdit(c.dataset.id);
+  });
+  board.addEventListener("keydown", e => {
+    const c = e.target.closest(".card"); if (!c || e.target !== c) return;
+    if (e.key === "Enter") { e.preventDefault(); openEdit(c.dataset.id); }
+    if (e.key === "Delete") { e.preventDefault(); askDelete(c.dataset.id); }
+  });
+  $("search").addEventListener("input", render);
+  $("filter").addEventListener("change", render);
+
+  /* ---------- Arrastar e soltar (mouse e toque) ---------- */
+  let drag = null;
+  board.addEventListener("pointerdown", e => {
+    const card = e.target.closest(".card");
+    if (!card || e.target.closest("button") || e.button !== 0) return;
+    drag = { card, id: card.dataset.id, sx: e.clientX, sy: e.clientY, started: false, pid: e.pointerId };
+  });
+
+  window.addEventListener("pointermove", e => {
+    if (!drag || e.pointerId !== drag.pid) return;
+    if (!drag.started) {
+      if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 6) return;
+      const r = drag.card.getBoundingClientRect();
+      drag.ox = drag.sx - r.left; drag.oy = drag.sy - r.top;
+      const ghost = drag.card.cloneNode(true);
+      ghost.classList.add("ghost"); ghost.style.width = r.width + "px";
+      document.body.appendChild(ghost);
+      const ph = document.createElement("div");
+      ph.className = "placeholder"; ph.style.height = r.height + "px";
+      drag.card.replaceWith(ph);
+      drag.ghost = ghost; drag.ph = ph; drag.started = true;
+      document.body.classList.add("dragging");
+    }
+    e.preventDefault();
+    drag.ghost.style.left = (e.clientX - drag.ox) + "px";
+    drag.ghost.style.top = (e.clientY - drag.oy) + "px";
+
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const lane = under && under.closest(".lane");
+    board.querySelectorAll(".lane.over").forEach(l => l !== lane && l.classList.remove("over"));
+    if (!lane) return;
+    lane.classList.add("over");
+    const list = lane.querySelector(".list");
+    const empty = list.querySelector(".empty"); if (empty) empty.hidden = true;
+    const cards = [...list.querySelectorAll(".card")];
+    const before = cards.find(c => { const r = c.getBoundingClientRect(); return e.clientY < r.top + r.height / 2; });
+    if (before) list.insertBefore(drag.ph, before); else list.appendChild(drag.ph);
+
+    // rolagem automática perto das bordas
+    const edge = 60;
+    if (e.clientY < edge) window.scrollBy(0, -12); else if (e.clientY > innerHeight - edge) window.scrollBy(0, 12);
+  }, { passive: false });
+
+  function endDrag(cancel) {
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (!d.started) return;
+    document.body.classList.remove("dragging");
+    d.ghost.remove();
+    const list = d.ph.parentElement;
+    const lane = list && list.closest(".lane");
+    if (!cancel && lane) {
+      const t = tasks.find(x => x.id === d.id);
+      const next = d.ph.nextElementSibling && d.ph.nextElementSibling.classList.contains("card") ? d.ph.nextElementSibling.dataset.id : null;
+      tasks.splice(tasks.indexOf(t), 1);
+      t.col = lane.dataset.col;
+      if (next) tasks.splice(tasks.findIndex(x => x.id === next), 0, t);
+      else {
+        // depois do último card da coluna (respeitando filtros)
+        const prev = d.ph.previousElementSibling && d.ph.previousElementSibling.classList.contains("card") ? d.ph.previousElementSibling.dataset.id : null;
+        if (prev) tasks.splice(tasks.findIndex(x => x.id === prev) + 1, 0, t); else tasks.push(t);
+      }
+      save();
+    }
+    render();
+  }
+  window.addEventListener("pointerup", () => endDrag(false));
+  window.addEventListener("pointercancel", () => endDrag(true));
+  window.addEventListener("keydown", e => { if (e.key === "Escape" && drag && drag.started) endDrag(true); });
+
+  render();
+})();
+</script>
+</body>
+</html>
