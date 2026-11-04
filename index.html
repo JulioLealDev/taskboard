@@ -115,6 +115,18 @@ textarea.field { min-height: 96px; resize: vertical; }
 .confirm p { margin: 0; color: var(--muted); }
 
 .note { color: var(--muted); font-size: 12.5px; }
+.note code, .hint code { font-family: var(--mono); font-size: .95em; }
+.hint { margin: 0; color: var(--muted); font-size: 13.5px; }
+.hint a { color: var(--accent); }
+label.check { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+label.check input { margin-top: 3px; }
+.sync { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--card); border-radius: 99px; padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--muted); }
+.sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.sync[data-state="saved"] .dot { background: var(--low); }
+.sync[data-state="saving"] .dot, .sync[data-state="pending"] .dot { background: var(--mid); }
+.sync[data-state="error"] .dot, .sync[data-state="readonly"] .dot { background: var(--high); }
+.banner { background: var(--mid-bg); color: var(--fg); border-radius: 10px; padding: 10px 14px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.banner .btn { padding: 5px 12px; }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 14px; z-index: 60; display: flex; gap: 12px; align-items: center; }
 .toast button { background: none; border: none; color: var(--accent); font-weight: 600; cursor: pointer; padding: 0; filter: brightness(1.3); }
 
@@ -141,15 +153,14 @@ textarea.field { min-height: 96px; resize: vertical; }
         <option value="media">Média</option>
         <option value="baixa">Baixa</option>
       </select>
-      <button class="btn btn-ghost" id="exportBtn" title="Baixar todas as tarefas em um arquivo .json">Exportar JSON</button>
-      <button class="btn btn-ghost" id="importBtn" title="Carregar tarefas de um arquivo .json">Importar JSON</button>
-      <input type="file" id="importFile" accept="application/json,.json" hidden>
+      <button class="sync" id="syncBtn" data-state="loading" title="Conexão com o GitHub"><span class="dot"></span><span id="syncText">Carregando…</span></button>
       <button class="btn btn-primary" id="newBtn">+ Nova tarefa</button>
     </div>
   </header>
 
+  <div class="banner" id="bannerTop" hidden></div>
   <main class="board" id="board"></main>
-  <div class="note">Arraste os cards para mudar a ordem ou a coluna. Tudo fica salvo neste navegador. Use Exportar JSON para guardar um arquivo com as tarefas e Importar JSON para carregá-lo em outro dispositivo.</div>
+  <div class="note">Arraste os cards para mudar a ordem ou a coluna. As tarefas ficam no arquivo <code>data/tasks.json</code> do repositório, e cada alteração vira um commit.</div>
 </div>
 
 <dialog id="editDlg">
@@ -196,11 +207,32 @@ textarea.field { min-height: 96px; resize: vertical; }
   </div>
 </dialog>
 
+<dialog id="tokDlg">
+  <form class="modal" id="tokForm" method="dialog">
+    <h2>Conectar ao GitHub</h2>
+    <p class="hint">Para gravar no <code id="repoName"></code>, cole um token de acesso pessoal (fine-grained) com acesso só a esse repositório e a permissão <b>Contents: Read and write</b>.
+      <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Criar token no GitHub</a></p>
+    <label>Token
+      <input class="field" id="tokInput" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+    </label>
+    <label class="check"><input type="checkbox" id="tokRemember"> Lembrar o token neste navegador (só o token, as tarefas continuam no repositório)</label>
+    <p class="error" id="tokErr" hidden></p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost left" id="tokForget" hidden>Desconectar</button>
+      <button type="button" class="btn btn-ghost" id="tokCancel">Cancelar</button>
+      <button type="submit" class="btn btn-primary" id="tokSave">Conectar</button>
+    </div>
+  </form>
+</dialog>
+
 <div class="toast" id="toast" hidden><span id="toastMsg"></span><button id="toastUndo" hidden>Desfazer</button></div>
 
 <script>
 (function () {
-  const KEY = "taskboard.v1";
+  /* Onde as tarefas ficam: arquivo JSON no repositório, lido e gravado pela API do GitHub */
+  const REPO = { owner: "JulioLealDev", name: "taskboard", branch: "main", path: "data/tasks.json" };
+  const API = `https://api.github.com/repos/${REPO.owner}/${REPO.name}/contents/${REPO.path}`;
+  const TOKEN_KEY = "taskboard.token";
   const COLS = [
     { id: "todo", name: "A fazer" },
     { id: "doing", name: "Em andamento" },
@@ -212,20 +244,11 @@ textarea.field { min-height: 96px; resize: vertical; }
   const plus = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
   const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 
-  function sample() {
-    return [
-      { id: uid(), col: "todo", title: "Exemplo: planejar sprint da semana", desc: "Listar entregas e dividir responsabilidades.", prio: "alta", due: plus(2) },
-      { id: uid(), col: "todo", title: "Exemplo: revisar orçamento", desc: "", prio: "media", due: plus(7) },
-      { id: uid(), col: "doing", title: "Exemplo: escrever documentação", desc: "Seção de instalação e primeiros passos.", prio: "media", due: plus(0) },
-      { id: uid(), col: "doing", title: "Exemplo: responder e-mails pendentes", desc: "", prio: "baixa", due: plus(-1) },
-      { id: uid(), col: "done", title: "Exemplo: configurar repositório", desc: "", prio: "baixa", due: plus(-3) }
-    ];
-  }
-
-  let tasks;
-  try { const raw = localStorage.getItem(KEY); tasks = raw ? JSON.parse(raw) : null; } catch (e) { tasks = null; }
-  if (!Array.isArray(tasks)) tasks = sample();
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(tasks)); } catch (e) {} };
+  let tasks = [];
+  let fileSha = null;      // versão do arquivo no GitHub
+  let token = null;
+  try { token = localStorage.getItem(TOKEN_KEY); } catch (e) {}
+  let dirty = false, saving = false, saveTimer = null, loaded = false;
 
   const $ = id => document.getElementById(id);
   const board = $("board");
@@ -355,41 +378,128 @@ textarea.field { min-height: 96px; resize: vertical; }
     toastTimer = setTimeout(() => { $("toast").hidden = true; }, undo ? 6000 : 2200);
   }
 
-  /* ---------- Exportar / importar JSON ---------- */
-  $("exportBtn").onclick = () => {
-    const data = { app: "taskboard", version: 1, exportedAt: new Date().toISOString(), columns: COLS, tasks };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `taskboard-${iso(new Date())}.json`;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    toast(`${tasks.length} tarefa${tasks.length === 1 ? "" : "s"} exportada${tasks.length === 1 ? "" : "s"}`);
-  };
-  $("importBtn").onclick = () => $("importFile").click();
-  $("importFile").addEventListener("change", async e => {
-    const file = e.target.files[0]; e.target.value = "";
-    if (!file) return;
+  /* ---------- GitHub ---------- */
+  const b64encode = str => { const bytes = new TextEncoder().encode(str); let bin = ""; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); };
+  const b64decode = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, "")), c => c.charCodeAt(0)));
+  const headers = () => { const h = { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }; if (token) h.Authorization = "Bearer " + token; return h; };
+
+  function setSync(state, text) { $("syncBtn").dataset.state = state; $("syncText").textContent = text; }
+  function banner(html) { const b = $("bannerTop"); b.hidden = !html; b.innerHTML = html || ""; }
+
+  function normalize(list) {
+    const cols = COLS.map(c => c.id);
+    return (Array.isArray(list) ? list : []).filter(t => t && typeof t.title === "string" && t.title.trim()).map(t => ({
+      id: typeof t.id === "string" && t.id ? t.id : uid(),
+      col: cols.includes(t.col) ? t.col : "todo",
+      title: t.title.trim().slice(0, 120),
+      desc: typeof t.desc === "string" ? t.desc : "",
+      prio: PRIO[t.prio] ? t.prio : "media",
+      due: /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : ""
+    }));
+  }
+
+  async function fetchFile() {
+    const r = await fetch(`${API}?ref=${REPO.branch}&t=${Date.now()}`, { headers: headers(), cache: "no-store" });
+    if (r.status === 404) return { sha: null, tasks: [] };
+    if (r.status === 401) throw Object.assign(new Error("token"), { code: 401 });
+    if (!r.ok) throw Object.assign(new Error("HTTP " + r.status), { code: r.status });
+    const j = await r.json();
+    const data = JSON.parse(b64decode(j.content || "") || "{}");
+    return { sha: j.sha, tasks: normalize(Array.isArray(data) ? data : data.tasks) };
+  }
+
+  async function load() {
+    setSync("loading", "Carregando…");
     try {
-      const parsed = JSON.parse(await file.text());
-      const list = Array.isArray(parsed) ? parsed : parsed && parsed.tasks;
-      if (!Array.isArray(list)) throw new Error("formato");
-      const cols = COLS.map(c => c.id);
-      const clean = list.filter(t => t && typeof t.title === "string" && t.title.trim()).map(t => ({
-        id: typeof t.id === "string" && t.id ? t.id : uid(),
-        col: cols.includes(t.col) ? t.col : "todo",
-        title: t.title.trim().slice(0, 120),
-        desc: typeof t.desc === "string" ? t.desc.slice(0, 2000) : "",
-        prio: PRIO[t.prio] ? t.prio : "media",
-        due: /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : ""
-      }));
-      const before = tasks;
-      tasks = clean; save(); render();
-      toast(`${clean.length} tarefa${clean.length === 1 ? "" : "s"} importada${clean.length === 1 ? "" : "s"}`, () => { tasks = before; save(); render(); });
-    } catch (err) {
-      toast("Não foi possível ler o arquivo. Escolha um .json exportado pelo TaskBoard.");
+      const f = await fetchFile();
+      fileSha = f.sha; tasks = f.tasks; loaded = true;
+      render(); refreshSync();
+    } catch (e) {
+      loaded = false; render();
+      if (e.code === 401) { token = null; forgetToken(); setSync("readonly", "Token inválido"); banner(`O token salvo não funciona mais. <button class="btn btn-ghost" data-connect>Conectar de novo</button>`); return load(); }
+      setSync("error", "Erro ao carregar");
+      banner(`Não consegui ler <code>${REPO.path}</code> do GitHub (${esc(e.message)}). <button class="btn btn-ghost" data-reload>Tentar de novo</button>`);
     }
+  }
+
+  function refreshSync() {
+    if (!token) { setSync("readonly", "Somente leitura"); banner(`Para salvar suas alterações no repositório, conecte um token do GitHub. <button class="btn btn-primary" data-connect>Conectar ao GitHub</button>`); return; }
+    banner("");
+    if (saving) setSync("saving", "Salvando…");
+    else if (dirty) setSync("pending", "Alterações pendentes");
+    else setSync("saved", "Salvo no GitHub");
+  }
+
+  function save() {
+    if (!loaded) return;
+    dirty = true;
+    if (!token) { refreshSync(); return; }
+    refreshSync();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(flush, 1200);   // agrupa várias mudanças em um commit
+  }
+
+  async function flush(retry) {
+    if (!dirty || !token) return;
+    if (saving) { saveTimer = setTimeout(flush, 600); return; }
+    saving = true; dirty = false; refreshSync();
+    const body = JSON.stringify({ updatedAt: new Date().toISOString(), tasks }, null, 2) + "\n";
+    try {
+      const r = await fetch(API, { method: "PUT", headers: { ...headers(), "Content-Type": "application/json" },
+        body: JSON.stringify({ message: "Atualiza tarefas do TaskBoard", content: b64encode(body), branch: REPO.branch, ...(fileSha ? { sha: fileSha } : {}) }) });
+      if ((r.status === 409 || r.status === 422) && !retry) {
+        // o arquivo mudou no GitHub: pega a versão atual e grava o quadro por cima
+        const cur = await fetch(`${API}?ref=${REPO.branch}&t=${Date.now()}`, { headers: headers(), cache: "no-store" });
+        fileSha = cur.ok ? (await cur.json()).sha : null;
+        saving = false; dirty = true; return flush(true);
+      }
+      if (r.status === 401 || r.status === 403 || r.status === 404) throw Object.assign(new Error("perm"), { code: r.status });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      fileSha = (await r.json()).content.sha;
+      saving = false; refreshSync();
+    } catch (e) {
+      saving = false; dirty = true;
+      if (e.code) { setSync("error", "Sem permissão"); banner(`O GitHub recusou a gravação (${e.code}). Confira se o token tem <b>Contents: Read and write</b> no repositório <code>${REPO.name}</code>. <button class="btn btn-ghost" data-connect>Trocar token</button>`); }
+      else { setSync("error", "Não salvo"); banner(`Não consegui salvar no GitHub. <button class="btn btn-ghost" data-retry>Tentar de novo</button>`); }
+    }
+  }
+
+  function forgetToken() { try { localStorage.removeItem(TOKEN_KEY); } catch (e) {} }
+
+  const tokDlg = $("tokDlg");
+  $("repoName").textContent = `${REPO.owner}/${REPO.name}`;
+  function openToken() {
+    $("tokInput").value = ""; $("tokErr").hidden = true; $("tokForget").hidden = !token;
+    let remembered = false; try { remembered = !!localStorage.getItem(TOKEN_KEY); } catch (e) {}
+    $("tokRemember").checked = remembered;
+    tokDlg.showModal(); $("tokInput").focus();
+  }
+  $("tokForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const t = $("tokInput").value.trim();
+    if (!t) { $("tokErr").textContent = "Cole o token."; $("tokErr").hidden = false; return; }
+    $("tokSave").disabled = true;
+    try {
+      const r = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.name}`, { headers: { Accept: "application/vnd.github+json", Authorization: "Bearer " + t } });
+      if (!r.ok) throw new Error(r.status === 401 ? "O GitHub não aceitou esse token." : `O token não dá acesso ao repositório (${r.status}).`);
+      const j = await r.json();
+      if (j.permissions && !j.permissions.push) throw new Error("O token só tem leitura. Dê a permissão Contents: Read and write.");
+      token = t;
+      forgetToken(); if ($("tokRemember").checked) { try { localStorage.setItem(TOKEN_KEY, t); } catch (e) {} }
+      tokDlg.close(); toast("Conectado ao GitHub");
+      if (!loaded) await load(); else if (dirty) flush(); else refreshSync();
+    } catch (err) { $("tokErr").textContent = err.message; $("tokErr").hidden = false; }
+    finally { $("tokSave").disabled = false; }
   });
+  $("tokCancel").onclick = () => tokDlg.close();
+  $("tokForget").onclick = () => { token = null; forgetToken(); tokDlg.close(); refreshSync(); };
+  $("syncBtn").onclick = () => token && dirty && !saving ? flush() : openToken();
+  document.addEventListener("click", e => {
+    if (e.target.closest("[data-connect]")) openToken();
+    if (e.target.closest("[data-reload]")) load();
+    if (e.target.closest("[data-retry]")) flush();
+  });
+  window.addEventListener("beforeunload", e => { if (dirty || saving) { e.preventDefault(); e.returnValue = ""; } });
 
   /* ---------- Cliques ---------- */
   board.addEventListener("click", e => {
@@ -479,6 +589,7 @@ textarea.field { min-height: 96px; resize: vertical; }
   window.addEventListener("keydown", e => { if (e.key === "Escape" && drag && drag.started) endDrag(true); });
 
   render();
+  load();
 })();
 </script>
 </body>
