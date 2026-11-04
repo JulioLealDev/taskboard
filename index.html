@@ -141,12 +141,15 @@ textarea.field { min-height: 96px; resize: vertical; }
         <option value="media">Média</option>
         <option value="baixa">Baixa</option>
       </select>
+      <button class="btn btn-ghost" id="exportBtn" title="Baixar todas as tarefas em um arquivo .json">Exportar JSON</button>
+      <button class="btn btn-ghost" id="importBtn" title="Carregar tarefas de um arquivo .json">Importar JSON</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
       <button class="btn btn-primary" id="newBtn">+ Nova tarefa</button>
     </div>
   </header>
 
   <main class="board" id="board"></main>
-  <div class="note">Arraste os cards para mudar a ordem ou a coluna. Tudo fica salvo neste navegador.</div>
+  <div class="note">Arraste os cards para mudar a ordem ou a coluna. Tudo fica salvo neste navegador. Use Exportar JSON para guardar um arquivo com as tarefas e Importar JSON para carregá-lo em outro dispositivo.</div>
 </div>
 
 <dialog id="editDlg">
@@ -351,6 +354,42 @@ textarea.field { min-height: 96px; resize: vertical; }
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => { $("toast").hidden = true; }, undo ? 6000 : 2200);
   }
+
+  /* ---------- Exportar / importar JSON ---------- */
+  $("exportBtn").onclick = () => {
+    const data = { app: "taskboard", version: 1, exportedAt: new Date().toISOString(), columns: COLS, tasks };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `taskboard-${iso(new Date())}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    toast(`${tasks.length} tarefa${tasks.length === 1 ? "" : "s"} exportada${tasks.length === 1 ? "" : "s"}`);
+  };
+  $("importBtn").onclick = () => $("importFile").click();
+  $("importFile").addEventListener("change", async e => {
+    const file = e.target.files[0]; e.target.value = "";
+    if (!file) return;
+    try {
+      const parsed = JSON.parse(await file.text());
+      const list = Array.isArray(parsed) ? parsed : parsed && parsed.tasks;
+      if (!Array.isArray(list)) throw new Error("formato");
+      const cols = COLS.map(c => c.id);
+      const clean = list.filter(t => t && typeof t.title === "string" && t.title.trim()).map(t => ({
+        id: typeof t.id === "string" && t.id ? t.id : uid(),
+        col: cols.includes(t.col) ? t.col : "todo",
+        title: t.title.trim().slice(0, 120),
+        desc: typeof t.desc === "string" ? t.desc.slice(0, 2000) : "",
+        prio: PRIO[t.prio] ? t.prio : "media",
+        due: /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : ""
+      }));
+      const before = tasks;
+      tasks = clean; save(); render();
+      toast(`${clean.length} tarefa${clean.length === 1 ? "" : "s"} importada${clean.length === 1 ? "" : "s"}`, () => { tasks = before; save(); render(); });
+    } catch (err) {
+      toast("Não foi possível ler o arquivo. Escolha um .json exportado pelo TaskBoard.");
+    }
+  });
 
   /* ---------- Cliques ---------- */
   board.addEventListener("click", e => {

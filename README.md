@@ -6,6 +6,6 @@ Quadro de tarefas em uma única página (HTML, CSS e JavaScript puros, sem depen
 - Cards com título, descrição, prioridade (Alta, Média, Baixa) e prazo
 - Criar, editar, arrastar (mouse e toque) e excluir cards, com desfazer
 - Busca e filtro por prioridade
-- Dados salvos no `localStorage` do navegador
+- Dados salvos no `localStorage` do navegador, com Exportar e Importar JSON para backup ou para levar as tarefas a outro dispositivo
 
 Para rodar localmente, basta abrir o `index.html` no navegador. O site é publicado pelo GitHub Pages a partir da branch `main`.
