@@ -24,6 +24,14 @@
   --shadow: 0 1px 2px rgba(28,36,32,.08), 0 2px 8px rgba(28,36,32,.06);
   --lift: 0 12px 30px rgba(28,36,32,.22);
   --overlay: rgba(20,26,23,.45);
+  --pc-1: #dcebf7; --pi-1: #24618f;
+  --pc-2: #e1f1e0; --pi-2: #2f6d2c;
+  --pc-3: #fbedd2; --pi-3: #8a5a06;
+  --pc-4: #f8e0e3; --pi-4: #9c3443;
+  --pc-5: #ebe3f6; --pi-5: #5b3f8f;
+  --pc-6: #d9f0ee; --pi-6: #1e6b65;
+  --pc-7: #f6e4d8; --pi-7: #8f4b1f;
+  --pc-8: #e9ebee; --pi-8: #4a5361;
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -33,12 +41,28 @@
   --accent: #6fbf9c; --accent-fg: #0f1a15;
   --high: #f08a7e; --high-bg: #3d211e; --mid: #e3b65a; --mid-bg: #3a2e14; --low: #8fcf89; --low-bg: #1f3320;
   --shadow: 0 1px 2px rgba(0,0,0,.4); --lift: 0 12px 30px rgba(0,0,0,.55); --overlay: rgba(0,0,0,.6);
+  --pc-1: #1d3346; --pi-1: #9ccaf0;
+  --pc-2: #213a22; --pi-2: #9fd39a;
+  --pc-3: #3d3118; --pi-3: #e9c271;
+  --pc-4: #432329; --pi-4: #f1a2ad;
+  --pc-5: #322a45; --pi-5: #c6b2ec;
+  --pc-6: #1a3c3a; --pi-6: #8fd7cf;
+  --pc-7: #432c1e; --pi-7: #eeb48c;
+  --pc-8: #2d3239; --pi-8: #c3cad4;
   color-scheme: dark } }
 :root[data-theme="dark"] {
   --bg: #141917; --lane: #1c2320; --card: #252e2a; --fg: #e6ece8; --muted: #9aa8a0; --line: #34403a;
   --accent: #6fbf9c; --accent-fg: #0f1a15;
   --high: #f08a7e; --high-bg: #3d211e; --mid: #e3b65a; --mid-bg: #3a2e14; --low: #8fcf89; --low-bg: #1f3320;
   --shadow: 0 1px 2px rgba(0,0,0,.4); --lift: 0 12px 30px rgba(0,0,0,.55); --overlay: rgba(0,0,0,.6);
+  --pc-1: #1d3346; --pi-1: #9ccaf0;
+  --pc-2: #213a22; --pi-2: #9fd39a;
+  --pc-3: #3d3118; --pi-3: #e9c271;
+  --pc-4: #432329; --pi-4: #f1a2ad;
+  --pc-5: #322a45; --pi-5: #c6b2ec;
+  --pc-6: #1a3c3a; --pi-6: #8fd7cf;
+  --pc-7: #432c1e; --pi-7: #eeb48c;
+  --pc-8: #2d3239; --pi-8: #c3cad4;
   color-scheme: dark }
 
 * { box-sizing: border-box; }
@@ -115,6 +139,21 @@ textarea.field { min-height: 96px; resize: vertical; }
 .confirm p { margin: 0; color: var(--muted); }
 
 .note { color: var(--muted); font-size: 12.5px; }
+.proj-tag { font-size: 12px; font-weight: 600; color: var(--pi, var(--muted)); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.card[style*="--pc"] { background: var(--pc); }
+.card[style*="--pc"] .prio { background: var(--card); }
+.card[style*="--pc"] .icon-btn:hover { background: var(--card); }
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; background: var(--sw); cursor: pointer; padding: 0; box-shadow: inset 0 0 0 1px var(--line); }
+.swatch[aria-pressed="true"] { border-color: var(--fg); }
+.newproj { display: grid; gap: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.newproj .line { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.newproj .line .field { flex: 1; min-width: 160px; background: var(--card); }
+.plist { display: grid; gap: 10px; max-height: 55vh; overflow: auto; }
+.pitem { display: grid; gap: 8px; padding: 10px; border-radius: 10px; background: var(--pc); }
+.pitem .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pitem .field { flex: 1; min-width: 140px; background: var(--card); }
+.pitem .meta { font-size: 12.5px; color: var(--pi); font-weight: 500; }
 .note code, .hint code { font-family: var(--mono); font-size: .95em; }
 .hint { margin: 0; color: var(--muted); font-size: 13.5px; }
 .hint a { color: var(--accent); }
@@ -147,6 +186,7 @@ label.check input { margin-top: 3px; }
     <div class="summary" id="summary"></div>
     <div class="tools">
       <input id="search" type="search" placeholder="Buscar tarefa…" aria-label="Buscar tarefa">
+      <select id="pfilter" aria-label="Filtrar por projeto"><option value="">Todos os projetos</option></select>
       <select id="filter" aria-label="Filtrar por prioridade">
         <option value="">Todas as prioridades</option>
         <option value="alta">Alta</option>
@@ -154,6 +194,7 @@ label.check input { margin-top: 3px; }
         <option value="baixa">Baixa</option>
       </select>
       <button class="sync" id="syncBtn" data-state="loading" title="Conexão com o GitHub"><span class="dot"></span><span id="syncText">Carregando…</span></button>
+      <button class="btn btn-ghost" id="projBtn">Projetos</button>
       <button class="btn btn-primary" id="newBtn">+ Nova tarefa</button>
     </div>
   </header>
@@ -169,6 +210,15 @@ label.check input { margin-top: 3px; }
     <label>Título
       <input class="field" id="fTitle" maxlength="120" autocomplete="off">
     </label>
+    <label>Projeto
+      <select class="field" id="fProj"></select>
+    </label>
+    <div class="newproj" id="fNewProj" hidden>
+      <div class="line">
+        <input class="field" id="fNewProjName" maxlength="60" placeholder="Nome do novo projeto" aria-label="Nome do novo projeto" autocomplete="off">
+      </div>
+      <div class="swatches" id="fNewProjColors" role="group" aria-label="Cor do projeto"></div>
+    </div>
     <label>Descrição
       <textarea class="field" id="fDesc" maxlength="2000"></textarea>
     </label>
@@ -187,13 +237,31 @@ label.check input { margin-top: 3px; }
         <select class="field" id="fCol"></select>
       </label>
     </div>
-    <p class="error" id="fErr" hidden>Dê um título à tarefa.</p>
+    <p class="error" id="fErr" hidden></p>
     <div class="modal-actions">
       <button type="button" class="btn btn-ghost left" id="fDelete" hidden>Excluir</button>
       <button type="button" class="btn btn-ghost" id="fCancel">Cancelar</button>
       <button type="submit" class="btn btn-primary" id="fSave">Salvar</button>
     </div>
   </form>
+</dialog>
+
+<dialog id="projDlg">
+  <div class="modal">
+    <h2>Projetos</h2>
+    <div class="plist" id="plist"></div>
+    <div class="newproj">
+      <div class="line">
+        <input class="field" id="pNewName" maxlength="60" placeholder="Nome do novo projeto" aria-label="Nome do novo projeto" autocomplete="off">
+        <button type="button" class="btn btn-primary" id="pAdd">Criar projeto</button>
+      </div>
+      <div class="swatches" id="pNewColors" role="group" aria-label="Cor do novo projeto"></div>
+    </div>
+    <p class="error" id="pErr" hidden></p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-primary" id="pClose">Fechar</button>
+    </div>
+  </div>
 </dialog>
 
 <dialog id="delDlg">
@@ -245,6 +313,8 @@ label.check input { margin-top: 3px; }
   const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 
   let tasks = [];
+  let projects = [];       // { id, name, color: 1..8 }
+  const NCOLORS = 8;
   let fileSha = null;      // versão do arquivo no GitHub
   let token = null;
   try { token = localStorage.getItem(TOKEN_KEY); } catch (e) {}
@@ -270,10 +340,11 @@ label.check input { margin-top: 3px; }
   function render() {
     const q = $("search").value.trim().toLowerCase();
     const f = $("filter").value;
+    const pf = $("pfilter").value;
     board.innerHTML = "";
     for (const c of COLS) {
       const all = tasks.filter(t => t.col === c.id);
-      const shown = all.filter(t => (!f || t.prio === f) && (!q || (t.title + " " + t.desc).toLowerCase().includes(q)));
+      const shown = all.filter(t => (!f || t.prio === f) && (!pf || t.project === pf) && (!q || (t.title + " " + t.desc).toLowerCase().includes(q)));
       const lane = document.createElement("section");
       lane.className = "lane"; lane.dataset.col = c.id;
       lane.innerHTML = `<div class="lane-head"><h2>${c.name}</h2><span class="count">${all.length}</span>
@@ -287,11 +358,14 @@ label.check input { margin-top: 3px; }
         el.className = "card" + (t.col === "done" ? " done" : "");
         el.dataset.id = t.id; el.tabIndex = 0;
         el.setAttribute("aria-label", t.title);
+        const pr = projById(t.project);
+        if (pr) el.style.cssText = `--pc: var(--pc-${pr.color}); --pi: var(--pi-${pr.color})`;
         el.innerHTML = `<div class="card-top"><span class="prio ${t.prio}">${PRIO[t.prio]}</span>
             <div class="card-actions">
               <button class="icon-btn" data-edit="${t.id}" aria-label="Editar">Editar</button>
               <button class="icon-btn del" data-del="${t.id}" aria-label="Excluir">Excluir</button>
             </div></div>
+          ${pr ? `<span class="proj-tag">${esc(pr.name)}</span>` : ""}
           <h3>${esc(t.title)}</h3>
           ${t.desc ? `<p>${esc(t.desc)}</p>` : ""}
           ${di ? `<div class="card-foot"><span class="due ${di.cls}">${di.text}</span></div>` : ""}`;
@@ -308,7 +382,42 @@ label.check input { margin-top: 3px; }
   /* ---------- Editar / criar ---------- */
   const dlg = $("editDlg");
   let editing = null;
+  let lastProject = null;
   $("fCol").innerHTML = COLS.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+
+  const projById = id => projects.find(p => p.id === id);
+  const nextColor = () => { const used = projects.map(p => p.color); for (let c = 1; c <= NCOLORS; c++) if (!used.includes(c)) return c; return (projects.length % NCOLORS) + 1; };
+  function swatches(box, current, onPick) {
+    box.innerHTML = "";
+    for (let c = 1; c <= NCOLORS; c++) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "swatch"; b.style.setProperty("--sw", `var(--pc-${c})`);
+      b.setAttribute("aria-label", "Cor " + c); b.setAttribute("aria-pressed", String(c === current));
+      b.onclick = () => { box.querySelectorAll(".swatch").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); onPick(c); };
+      box.appendChild(b);
+    }
+  }
+  function sortedProjects() { return [...projects].sort((a, b) => a.name.localeCompare(b.name, "pt-BR")); }
+  function fillProjectSelects() {
+    const opts = sortedProjects().map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("");
+    const pf = $("pfilter"), cur = pf.value;
+    pf.innerHTML = `<option value="">Todos os projetos</option>` + opts;
+    pf.value = projById(cur) ? cur : "";
+  }
+  let newProjColor = 1;
+  function fillFormProjects(selected) {
+    $("fProj").innerHTML = `<option value="" disabled>Escolha um projeto</option>` +
+      sortedProjects().map(p => `<option value="${p.id}">${esc(p.name)}</option>`).join("") +
+      `<option value="__new">+ Novo projeto…</option>`;
+    $("fProj").value = selected && projById(selected) ? selected : (projects.length ? "" : "__new");
+    toggleNewProj();
+  }
+  function toggleNewProj() {
+    const on = $("fProj").value === "__new";
+    $("fNewProj").hidden = !on;
+    if (on) { $("fNewProjName").value = ""; newProjColor = nextColor(); swatches($("fNewProjColors"), newProjColor, c => newProjColor = c); }
+  }
+  $("fProj").addEventListener("change", () => { toggleNewProj(); if ($("fProj").value === "__new") $("fNewProjName").focus(); });
 
   function openEdit(id, col) {
     const t = id ? tasks.find(x => x.id === id) : null;
@@ -319,6 +428,7 @@ label.check input { margin-top: 3px; }
     $("fPrio").value = t ? t.prio : "media";
     $("fDue").value = t ? (t.due || "") : "";
     $("fCol").value = t ? t.col : (col || "todo");
+    fillFormProjects(t ? t.project : ($("pfilter").value || lastProject));
     $("fDelete").hidden = !t;
     $("fErr").hidden = true;
     dlg.showModal();
@@ -328,8 +438,19 @@ label.check input { margin-top: 3px; }
   $("editForm").addEventListener("submit", e => {
     e.preventDefault();
     const title = $("fTitle").value.trim();
-    if (!title) { $("fErr").hidden = false; $("fTitle").focus(); return; }
-    const data = { title, desc: $("fDesc").value.trim(), prio: $("fPrio").value, due: $("fDue").value, col: $("fCol").value };
+    const err = (msg, el) => { $("fErr").textContent = msg; $("fErr").hidden = false; el.focus(); };
+    if (!title) return err("Dê um título à tarefa.", $("fTitle"));
+    let project = $("fProj").value;
+    if (project === "__new") {
+      const name = $("fNewProjName").value.trim();
+      if (!name) return err("Dê um nome ao novo projeto.", $("fNewProjName"));
+      const existing = projects.find(p => p.name.toLowerCase() === name.toLowerCase());
+      if (existing) project = existing.id;
+      else { const np = { id: uid(), name, color: newProjColor }; projects.push(np); project = np.id; fillProjectSelects(); }
+    }
+    if (!projById(project)) return err("Escolha o projeto da tarefa.", $("fProj"));
+    lastProject = project;
+    const data = { title, project, desc: $("fDesc").value.trim(), prio: $("fPrio").value, due: $("fDue").value, col: $("fCol").value };
     if (editing) {
       const i = tasks.findIndex(x => x.id === editing);
       const moved = tasks[i].col !== data.col;
@@ -345,6 +466,57 @@ label.check input { margin-top: 3px; }
   $("fCancel").onclick = () => dlg.close();
   $("fDelete").onclick = () => { const id = editing; dlg.close(); askDelete(id); };
   $("newBtn").onclick = () => openEdit(null);
+
+  /* ---------- Projetos ---------- */
+  const projDlg = $("projDlg");
+  let pNewColor = 1;
+  function renderProjects() {
+    const list = $("plist");
+    list.innerHTML = projects.length ? "" : `<div class="empty">Nenhum projeto ainda. Crie o primeiro abaixo.</div>`;
+    for (const p of sortedProjects()) {
+      const n = tasks.filter(t => t.project === p.id).length;
+      const item = document.createElement("div");
+      item.className = "pitem"; item.style.cssText = `--pc: var(--pc-${p.color}); --pi: var(--pi-${p.color})`;
+      item.innerHTML = `<div class="line">
+          <input class="field" maxlength="60" value="${esc(p.name)}" aria-label="Nome do projeto">
+          <span class="meta">${n} tarefa${n === 1 ? "" : "s"}</span>
+          <button type="button" class="icon-btn del" ${n ? `disabled title="Mova ou exclua as tarefas deste projeto antes"` : ""}>Excluir</button>
+        </div><div class="swatches" role="group" aria-label="Cor do projeto"></div>`;
+      const input = item.querySelector("input");
+      input.addEventListener("change", () => {
+        const v = input.value.trim();
+        if (!v) { input.value = p.name; return; }
+        p.name = v; save(); render(); fillProjectSelects();
+      });
+      swatches(item.querySelector(".swatches"), p.color, c => {
+        p.color = c; item.style.cssText = `--pc: var(--pc-${c}); --pi: var(--pi-${c})`; save(); render();
+      });
+      item.querySelector(".del").onclick = () => {
+        if (tasks.some(t => t.project === p.id)) return;
+        projects = projects.filter(x => x.id !== p.id); save(); render(); fillProjectSelects(); renderProjects();
+      };
+      list.appendChild(item);
+    }
+  }
+  function openProjects() {
+    $("pErr").hidden = true; $("pNewName").value = "";
+    pNewColor = nextColor(); swatches($("pNewColors"), pNewColor, c => pNewColor = c);
+    renderProjects(); projDlg.showModal();
+  }
+  $("pAdd").onclick = () => {
+    const name = $("pNewName").value.trim();
+    if (!name) { $("pErr").textContent = "Dê um nome ao projeto."; $("pErr").hidden = false; $("pNewName").focus(); return; }
+    if (projects.some(p => p.name.toLowerCase() === name.toLowerCase())) { $("pErr").textContent = "Já existe um projeto com esse nome."; $("pErr").hidden = false; return; }
+    $("pErr").hidden = true;
+    projects.push({ id: uid(), name, color: pNewColor });
+    save(); fillProjectSelects(); render();
+    $("pNewName").value = ""; pNewColor = nextColor(); swatches($("pNewColors"), pNewColor, c => pNewColor = c);
+    renderProjects();
+  };
+  $("pNewName").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("pAdd").click(); } });
+  $("pClose").onclick = () => projDlg.close();
+  $("projBtn").onclick = openProjects;
+  $("pfilter").addEventListener("change", render);
 
   /* ---------- Excluir ---------- */
   const del = $("delDlg");
@@ -394,25 +566,41 @@ label.check input { margin-top: 3px; }
       title: t.title.trim().slice(0, 120),
       desc: typeof t.desc === "string" ? t.desc : "",
       prio: PRIO[t.prio] ? t.prio : "media",
-      due: /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : ""
+      due: /^\d{4}-\d{2}-\d{2}$/.test(t.due || "") ? t.due : "",
+      project: typeof t.project === "string" ? t.project : ""
+    }));
+  }
+  function normalizeProjects(list) {
+    return (Array.isArray(list) ? list : []).filter(p => p && typeof p.name === "string" && p.name.trim()).map((p, i) => ({
+      id: typeof p.id === "string" && p.id ? p.id : uid(),
+      name: p.name.trim().slice(0, 60),
+      color: Number.isInteger(p.color) && p.color >= 1 && p.color <= NCOLORS ? p.color : (i % NCOLORS) + 1
     }));
   }
 
   async function fetchFile() {
     const r = await fetch(`${API}?ref=${REPO.branch}&t=${Date.now()}`, { headers: headers(), cache: "no-store" });
-    if (r.status === 404) return { sha: null, tasks: [] };
+    if (r.status === 404) return { sha: null, tasks: [], projects: [] };
     if (r.status === 401) throw Object.assign(new Error("token"), { code: 401 });
     if (!r.ok) throw Object.assign(new Error("HTTP " + r.status), { code: r.status });
     const j = await r.json();
     const data = JSON.parse(b64decode(j.content || "") || "{}");
-    return { sha: j.sha, tasks: normalize(Array.isArray(data) ? data : data.tasks) };
+    return { sha: j.sha, tasks: normalize(Array.isArray(data) ? data : data.tasks), projects: normalizeProjects(data.projects) };
   }
 
   async function load() {
     setSync("loading", "Carregando…");
     try {
       const f = await fetchFile();
-      fileSha = f.sha; tasks = f.tasks; loaded = true;
+      fileSha = f.sha; tasks = f.tasks; projects = f.projects; loaded = true;
+      // toda tarefa precisa de um projeto: as que não têm vão para "Geral"
+      const orphans = tasks.filter(t => !projById(t.project));
+      if (orphans.length) {
+        let g = projects.find(p => p.name === "Geral");
+        if (!g) { g = { id: uid(), name: "Geral", color: 8 }; projects.push(g); }
+        orphans.forEach(t => t.project = g.id);
+      }
+      fillProjectSelects();
       render(); refreshSync();
     } catch (e) {
       loaded = false; render();
@@ -443,7 +631,7 @@ label.check input { margin-top: 3px; }
     if (!dirty || !token) return;
     if (saving) { saveTimer = setTimeout(flush, 600); return; }
     saving = true; dirty = false; refreshSync();
-    const body = JSON.stringify({ updatedAt: new Date().toISOString(), tasks }, null, 2) + "\n";
+    const body = JSON.stringify({ updatedAt: new Date().toISOString(), projects, tasks }, null, 2) + "\n";
     try {
       const r = await fetch(API, { method: "PUT", headers: { ...headers(), "Content-Type": "application/json" },
         body: JSON.stringify({ message: "Atualiza tarefas do TaskBoard", content: b64encode(body), branch: REPO.branch, ...(fileSha ? { sha: fileSha } : {}) }) });

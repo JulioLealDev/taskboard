@@ -3,10 +3,11 @@
 Quadro de tarefas em uma única página (HTML, CSS e JavaScript puros, sem dependências).
 
 - Três colunas: A fazer, Em andamento e Concluído
-- Cards com título, descrição, prioridade (Alta, Média, Baixa) e prazo
+- Cards com título, projeto, descrição, prioridade (Alta, Média, Baixa) e prazo
+- Projetos com cor própria: toda tarefa pertence a um projeto, e os cards do mesmo projeto têm a mesma cor de fundo
 - Criar, editar, arrastar (mouse e toque) e excluir cards, com desfazer
-- Busca e filtro por prioridade
-- Tarefas salvas no arquivo `data/tasks.json` deste repositório (nada fica no navegador)
+- Busca e filtros por projeto e por prioridade
+- Projetos e tarefas salvos no arquivo `data/tasks.json` deste repositório (nada fica no navegador)
 
 ## Como as tarefas são salvas
 
