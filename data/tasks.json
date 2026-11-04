@@ -1,5 +1,21 @@
 {
-  "updatedAt": "2026-11-04T15:15:00.000Z",
-  "projects": [],
-  "tasks": []
+  "updatedAt": "2026-11-04T15:18:55.129Z",
+  "projects": [
+    {
+      "id": "wk9jkgnii09w",
+      "name": "Timecrax Game",
+      "color": 2
+    }
+  ],
+  "tasks": [
+    {
+      "id": "ph48aftji09w",
+      "title": "Criar Tutorial para o jogo",
+      "project": "wk9jkgnii09w",
+      "desc": "Criar um tutorial dinâmico para o jogo Timecrax",
+      "prio": "baixa",
+      "due": "2027-03-15",
+      "col": "todo"
+    }
+  ]
 }
