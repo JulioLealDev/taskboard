@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T17:49:08.148Z",
+  "updatedAt": "2026-11-05T17:50:00.867Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -40,7 +40,7 @@
       "id": "g3bxmnstacca",
       "title": "Enviar email a WU pedindo acesso ao sistema",
       "project": "u5uo39vzacca",
-      "desc": "",
+      "desc": "Descobrir email do professor Mikand e pedir ajuca com isso",
       "prio": "alta",
       "due": "",
       "col": "todo"
