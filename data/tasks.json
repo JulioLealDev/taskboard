@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T17:40:18.827Z",
+  "updatedAt": "2026-11-05T17:40:41.689Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -15,21 +15,21 @@
   "tasks": [
     {
       "id": "ph48aftji09w",
+      "col": "todo",
       "title": "Criar Tutorial para o jogo",
-      "project": "wk9jkgnii09w",
       "desc": "Criar um tutorial dinâmico para o jogo Timecrax",
       "prio": "baixa",
       "due": "2027-03-15",
-      "col": "todo"
+      "project": "wk9jkgnii09w"
     },
     {
       "id": "u72p54hczp04",
+      "col": "todo",
       "title": "Descobrir senha acesso ao email",
-      "project": "za4qxj5jzp03",
       "desc": "Descobrir senha de acesso do email juliofaria@unipb.pt",
-      "prio": "media",
+      "prio": "alta",
       "due": "",
-      "col": "todo"
+      "project": "za4qxj5jzp03"
     }
   ]
 }
