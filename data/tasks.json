@@ -1,10 +1,15 @@
 {
-  "updatedAt": "2026-11-04T15:18:55.129Z",
+  "updatedAt": "2026-11-05T17:40:18.827Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
       "name": "Timecrax Game",
       "color": 2
+    },
+    {
+      "id": "za4qxj5jzp03",
+      "name": "UPB",
+      "color": 8
     }
   ],
   "tasks": [
@@ -15,6 +20,15 @@
       "desc": "Criar um tutorial dinâmico para o jogo Timecrax",
       "prio": "baixa",
       "due": "2027-03-15",
+      "col": "todo"
+    },
+    {
+      "id": "u72p54hczp04",
+      "title": "Descobrir senha acesso ao email",
+      "project": "za4qxj5jzp03",
+      "desc": "Descobrir senha de acesso do email juliofaria@unipb.pt",
+      "prio": "media",
+      "due": "",
       "col": "todo"
     }
   ]
