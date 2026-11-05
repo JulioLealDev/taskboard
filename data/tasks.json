@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T17:40:41.689Z",
+  "updatedAt": "2026-11-05T17:48:35.631Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -10,6 +10,11 @@
       "id": "za4qxj5jzp03",
       "name": "UPB",
       "color": 8
+    },
+    {
+      "id": "u5uo39vzacca",
+      "name": "BIP problems",
+      "color": 7
     }
   ],
   "tasks": [
@@ -30,6 +35,15 @@
       "prio": "alta",
       "due": "",
       "project": "za4qxj5jzp03"
+    },
+    {
+      "id": "g3bxmnstacca",
+      "title": "Enviar email a WU pedindo acesso ao sistema",
+      "project": "u5uo39vzacca",
+      "desc": "",
+      "prio": "alta",
+      "due": "",
+      "col": "todo"
     }
   ]
 }
