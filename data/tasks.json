@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T17:50:21.248Z",
+  "updatedAt": "2026-11-05T18:43:26.177Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -15,6 +15,11 @@
       "id": "u5uo39vzacca",
       "name": "BIP problems",
       "color": 7
+    },
+    {
+      "id": "9v5j079k8vc7",
+      "name": "AIMA",
+      "color": 4
     }
   ],
   "tasks": [
@@ -41,6 +46,15 @@
       "title": "Enviar email a WU pedindo acesso ao sistema - hostels",
       "project": "u5uo39vzacca",
       "desc": "Descobrir email do professor Mikand e pedir ajuca com isso",
+      "prio": "alta",
+      "due": "",
+      "col": "todo"
+    },
+    {
+      "id": "ur1q77d58vc7",
+      "title": "Ligar na AIMA - solicitar comprovativo de deferimento",
+      "project": "9v5j079k8vc7",
+      "desc": "",
       "prio": "alta",
       "due": "",
       "col": "todo"
