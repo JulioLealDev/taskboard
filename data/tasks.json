@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T14:24:42.192Z",
+  "updatedAt": "2026-11-09T14:25:28.001Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -20,6 +20,11 @@
       "id": "9v5j079k8vc7",
       "name": "AIMA",
       "color": 4
+    },
+    {
+      "id": "tm4gqq7ksiz4",
+      "name": "StarsHealth",
+      "color": 6
     }
   ],
   "tasks": [
@@ -67,6 +72,15 @@
       "prio": "alta",
       "due": "2026-10-10",
       "col": "doing"
+    },
+    {
+      "id": "d7sz403jsiz4",
+      "title": "Ler Relatório Daniela",
+      "project": "tm4gqq7ksiz4",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-14",
+      "col": "todo"
     }
   ]
 }
