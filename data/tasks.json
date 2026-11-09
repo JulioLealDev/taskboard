@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T13:11:29.305Z",
+  "updatedAt": "2026-11-09T14:24:38.434Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -58,6 +58,15 @@
       "prio": "alta",
       "due": "",
       "col": "doing"
+    },
+    {
+      "id": "mxcaxy00rgq8",
+      "title": "Ler trabalho de licenciatura",
+      "project": "za4qxj5jzp03",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-10-10",
+      "col": "todo"
     }
   ]
 }
