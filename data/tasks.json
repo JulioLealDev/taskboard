@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T13:11:24.489Z",
+  "updatedAt": "2026-11-09T13:11:29.305Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -42,15 +42,6 @@
       "project": "za4qxj5jzp03"
     },
     {
-      "id": "g3bxmnstacca",
-      "title": "Enviar email a WU pedindo acesso ao sistema - hostels",
-      "project": "u5uo39vzacca",
-      "desc": "Descobrir email do professor Mikand e pedir ajuca com isso",
-      "prio": "alta",
-      "due": "",
-      "col": "todo"
-    },
-    {
       "id": "ur1q77d58vc7",
       "title": "Ligar na AIMA - solicitar comprovativo de deferimento",
       "project": "9v5j079k8vc7",
@@ -58,6 +49,15 @@
       "prio": "alta",
       "due": "",
       "col": "done"
+    },
+    {
+      "id": "g3bxmnstacca",
+      "title": "Enviar email a WU pedindo acesso ao sistema - hostels",
+      "project": "u5uo39vzacca",
+      "desc": "Descobrir email do professor Mikand e pedir ajuca com isso",
+      "prio": "alta",
+      "due": "",
+      "col": "doing"
     }
   ]
 }
