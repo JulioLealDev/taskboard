@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T14:52:27.513Z",
+  "updatedAt": "2026-11-10T18:04:46.386Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -39,7 +39,7 @@
     },
     {
       "id": "u72p54hczp04",
-      "col": "todo",
+      "col": "done",
       "title": "Descobrir senha acesso ao email",
       "desc": "Descobrir senha de acesso do email juliofaria@unipb.pt",
       "prio": "alta",
