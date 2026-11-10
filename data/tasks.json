@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T18:04:46.386Z",
+  "updatedAt": "2026-11-10T18:13:10.408Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -79,7 +79,7 @@
       "project": "za4qxj5jzp03",
       "desc": "",
       "prio": "alta",
-      "due": "2026-11-10",
+      "due": "2026-11-17",
       "col": "doing"
     }
   ]
