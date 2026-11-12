@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:18:46.066Z",
+  "updatedAt": "2026-11-12T17:29:10.835Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -107,6 +107,15 @@
       "desc": "",
       "prio": "alta",
       "due": "2026-11-15",
+      "col": "todo"
+    },
+    {
+      "id": "h3kj8eqhoc8y",
+      "title": "análise do Voice Agent",
+      "project": "tm4gqq7ksiz4",
+      "desc": "Entender Funcionalidade do Voice Agent Desenvolvido\nVerificar qual a funcionalidade desejada para o app",
+      "prio": "media",
+      "due": "2026-11-30",
       "col": "todo"
     }
   ]
