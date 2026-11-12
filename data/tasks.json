@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T18:13:10.408Z",
+  "updatedAt": "2026-11-12T16:58:49.202Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -47,40 +47,40 @@
       "project": "za4qxj5jzp03"
     },
     {
-      "id": "ur1q77d58vc7",
-      "title": "Ligar na AIMA - solicitar comprovativo de deferimento",
-      "project": "9v5j079k8vc7",
-      "desc": "",
-      "prio": "alta",
-      "due": "",
-      "col": "done"
-    },
-    {
       "id": "g3bxmnstacca",
+      "col": "done",
       "title": "Enviar email a WU pedindo acesso ao sistema - hostels",
-      "project": "u5uo39vzacca",
       "desc": "Descobrir email do professor Mikand e pedir ajuca com isso",
       "prio": "alta",
       "due": "",
-      "col": "doing"
+      "project": "u5uo39vzacca"
+    },
+    {
+      "id": "ur1q77d58vc7",
+      "col": "done",
+      "title": "Ligar na AIMA - solicitar comprovativo de deferimento",
+      "desc": "",
+      "prio": "alta",
+      "due": "",
+      "project": "9v5j079k8vc7"
     },
     {
       "id": "d7sz403jsiz4",
+      "col": "doing",
       "title": "Ler Relatório Daniela",
-      "project": "tm4gqq7ksiz4",
       "desc": "",
       "prio": "alta",
       "due": "2026-11-14",
-      "col": "doing"
+      "project": "tm4gqq7ksiz4"
     },
     {
       "id": "mxcaxy00rgq8",
+      "col": "doing",
       "title": "Ler trabalho de licenciatura",
-      "project": "za4qxj5jzp03",
       "desc": "",
       "prio": "alta",
       "due": "2026-11-17",
-      "col": "doing"
+      "project": "za4qxj5jzp03"
     }
   ]
 }
