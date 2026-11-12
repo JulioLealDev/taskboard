@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:15:41.078Z",
+  "updatedAt": "2026-11-12T17:17:44.765Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -89,6 +89,15 @@
       "desc": "",
       "prio": "alta",
       "due": "2026-11-12",
+      "col": "todo"
+    },
+    {
+      "id": "6v0xqlh09mvg",
+      "title": "Desenvolver e Adaptar App Luma",
+      "project": "tm4gqq7ksiz4",
+      "desc": "Integrar Voice Agent\nAjustar Design\nIntegrar Endpoints Diversos",
+      "prio": "alta",
+      "due": "2026-11-15",
       "col": "todo"
     }
   ]
