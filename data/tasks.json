@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:30:27.539Z",
+  "updatedAt": "2026-11-12T18:17:35.023Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -83,6 +83,15 @@
       "project": "za4qxj5jzp03"
     },
     {
+      "id": "t7l1x7caay5w",
+      "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
+      "project": "tm4gqq7ksiz4",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-15",
+      "col": "doing"
+    },
+    {
       "id": "ptpchafh6zfo",
       "title": "Comprar Tickets e agendar Booking",
       "project": "u5uo39vzacca",
@@ -96,15 +105,6 @@
       "title": "Desenvolver e Adaptar App Luma",
       "project": "tm4gqq7ksiz4",
       "desc": "Integrar Voice Agent\nAjustar Design\nIntegrar Endpoints Diversos",
-      "prio": "alta",
-      "due": "2026-11-15",
-      "col": "todo"
-    },
-    {
-      "id": "t7l1x7caay5w",
-      "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
-      "project": "tm4gqq7ksiz4",
-      "desc": "",
       "prio": "alta",
       "due": "2026-11-15",
       "col": "todo"
