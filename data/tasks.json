@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T17:17:44.765Z",
+  "updatedAt": "2026-11-12T17:18:46.066Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -96,6 +96,15 @@
       "title": "Desenvolver e Adaptar App Luma",
       "project": "tm4gqq7ksiz4",
       "desc": "Integrar Voice Agent\nAjustar Design\nIntegrar Endpoints Diversos",
+      "prio": "alta",
+      "due": "2026-11-15",
+      "col": "todo"
+    },
+    {
+      "id": "t7l1x7caay5w",
+      "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
+      "project": "tm4gqq7ksiz4",
+      "desc": "",
       "prio": "alta",
       "due": "2026-11-15",
       "col": "todo"
