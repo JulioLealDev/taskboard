@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T16:58:52.181Z",
+  "updatedAt": "2026-11-12T17:15:41.078Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -81,6 +81,15 @@
       "prio": "alta",
       "due": "2026-11-17",
       "project": "za4qxj5jzp03"
+    },
+    {
+      "id": "ptpchafh6zfo",
+      "title": "Comprar Tickets e agendar Booking",
+      "project": "u5uo39vzacca",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-12",
+      "col": "todo"
     }
   ]
 }
