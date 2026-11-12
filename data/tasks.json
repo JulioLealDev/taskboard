@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T18:17:35.023Z",
+  "updatedAt": "2026-11-12T18:17:38.027Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -47,6 +47,15 @@
       "project": "za4qxj5jzp03"
     },
     {
+      "id": "t7l1x7caay5w",
+      "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
+      "project": "tm4gqq7ksiz4",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-15",
+      "col": "done"
+    },
+    {
       "id": "d7sz403jsiz4",
       "col": "done",
       "title": "Ler Relatório Daniela",
@@ -81,15 +90,6 @@
       "prio": "alta",
       "due": "2026-11-17",
       "project": "za4qxj5jzp03"
-    },
-    {
-      "id": "t7l1x7caay5w",
-      "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
-      "project": "tm4gqq7ksiz4",
-      "desc": "",
-      "prio": "alta",
-      "due": "2026-11-15",
-      "col": "doing"
     },
     {
       "id": "ptpchafh6zfo",
