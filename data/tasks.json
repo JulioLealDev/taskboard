@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T16:58:49.202Z",
+  "updatedAt": "2026-11-12T16:58:52.181Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -47,6 +47,15 @@
       "project": "za4qxj5jzp03"
     },
     {
+      "id": "d7sz403jsiz4",
+      "col": "done",
+      "title": "Ler Relatório Daniela",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-14",
+      "project": "tm4gqq7ksiz4"
+    },
+    {
       "id": "g3bxmnstacca",
       "col": "done",
       "title": "Enviar email a WU pedindo acesso ao sistema - hostels",
@@ -63,15 +72,6 @@
       "prio": "alta",
       "due": "",
       "project": "9v5j079k8vc7"
-    },
-    {
-      "id": "d7sz403jsiz4",
-      "col": "doing",
-      "title": "Ler Relatório Daniela",
-      "desc": "",
-      "prio": "alta",
-      "due": "2026-11-14",
-      "project": "tm4gqq7ksiz4"
     },
     {
       "id": "mxcaxy00rgq8",
