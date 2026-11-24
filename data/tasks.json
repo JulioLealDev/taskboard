@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T15:34:09.746Z",
+  "updatedAt": "2026-11-24T15:34:13.222Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -120,7 +120,7 @@
     },
     {
       "id": "mogltoq7pzfg",
-      "col": "todo",
+      "col": "doing",
       "title": "Artigo IGI",
       "desc": "Verificar demandas sobre o Artigo IGI",
       "prio": "media",
