@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T15:33:58.753Z",
+  "updatedAt": "2026-11-24T15:34:00.747Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -47,6 +47,15 @@
       "project": "za4qxj5jzp03"
     },
     {
+      "id": "ptpchafh6zfo",
+      "col": "done",
+      "title": "Comprar Tickets e agendar Booking",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-12",
+      "project": "u5uo39vzacca"
+    },
+    {
       "id": "t7l1x7caay5w",
       "col": "done",
       "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
@@ -90,15 +99,6 @@
       "prio": "alta",
       "due": "2026-11-17",
       "project": "za4qxj5jzp03"
-    },
-    {
-      "id": "ptpchafh6zfo",
-      "col": "doing",
-      "title": "Comprar Tickets e agendar Booking",
-      "desc": "",
-      "prio": "alta",
-      "due": "2026-11-12",
-      "project": "u5uo39vzacca"
     },
     {
       "id": "6v0xqlh09mvg",
