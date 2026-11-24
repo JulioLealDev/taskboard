@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T18:17:38.027Z",
+  "updatedAt": "2026-11-24T15:33:58.753Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -48,12 +48,12 @@
     },
     {
       "id": "t7l1x7caay5w",
+      "col": "done",
       "title": "Verificar Acesso ao Servidor StarsHealth Com Maria Eduarda",
-      "project": "tm4gqq7ksiz4",
       "desc": "",
       "prio": "alta",
       "due": "2026-11-15",
-      "col": "done"
+      "project": "tm4gqq7ksiz4"
     },
     {
       "id": "d7sz403jsiz4",
@@ -93,39 +93,39 @@
     },
     {
       "id": "ptpchafh6zfo",
+      "col": "doing",
       "title": "Comprar Tickets e agendar Booking",
-      "project": "u5uo39vzacca",
       "desc": "",
       "prio": "alta",
       "due": "2026-11-12",
-      "col": "todo"
+      "project": "u5uo39vzacca"
     },
     {
       "id": "6v0xqlh09mvg",
+      "col": "todo",
       "title": "Desenvolver e Adaptar App Luma",
-      "project": "tm4gqq7ksiz4",
       "desc": "Integrar Voice Agent\nAjustar Design\nIntegrar Endpoints Diversos",
       "prio": "alta",
       "due": "2026-11-15",
-      "col": "todo"
+      "project": "tm4gqq7ksiz4"
     },
     {
       "id": "h3kj8eqhoc8y",
+      "col": "todo",
       "title": "análise do Voice Agent",
-      "project": "tm4gqq7ksiz4",
       "desc": "Entender Funcionalidade do Voice Agent Desenvolvido\nVerificar qual a funcionalidade desejada para o app",
       "prio": "media",
       "due": "2026-11-30",
-      "col": "todo"
+      "project": "tm4gqq7ksiz4"
     },
     {
       "id": "mogltoq7pzfg",
+      "col": "todo",
       "title": "Artigo IGI",
-      "project": "za4qxj5jzp03",
       "desc": "Verificar demandas sobre o Artigo IGI",
       "prio": "media",
       "due": "2026-11-15",
-      "col": "todo"
+      "project": "za4qxj5jzp03"
     }
   ]
 }
