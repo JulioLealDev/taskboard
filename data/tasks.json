@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T15:34:00.747Z",
+  "updatedAt": "2026-11-24T15:34:02.833Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -36,6 +36,15 @@
       "prio": "baixa",
       "due": "2027-03-15",
       "project": "wk9jkgnii09w"
+    },
+    {
+      "id": "mxcaxy00rgq8",
+      "col": "done",
+      "title": "Ler trabalho de licenciatura",
+      "desc": "",
+      "prio": "alta",
+      "due": "2026-11-17",
+      "project": "za4qxj5jzp03"
     },
     {
       "id": "u72p54hczp04",
@@ -90,15 +99,6 @@
       "prio": "alta",
       "due": "",
       "project": "9v5j079k8vc7"
-    },
-    {
-      "id": "mxcaxy00rgq8",
-      "col": "doing",
-      "title": "Ler trabalho de licenciatura",
-      "desc": "",
-      "prio": "alta",
-      "due": "2026-11-17",
-      "project": "za4qxj5jzp03"
     },
     {
       "id": "6v0xqlh09mvg",
