@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T15:34:13.222Z",
+  "updatedAt": "2026-11-24T15:34:14.884Z",
   "projects": [
     {
       "id": "wk9jkgnii09w",
@@ -36,6 +36,15 @@
       "prio": "baixa",
       "due": "2027-03-15",
       "project": "wk9jkgnii09w"
+    },
+    {
+      "id": "mogltoq7pzfg",
+      "col": "done",
+      "title": "Artigo IGI",
+      "desc": "Verificar demandas sobre o Artigo IGI",
+      "prio": "media",
+      "due": "2026-11-15",
+      "project": "za4qxj5jzp03"
     },
     {
       "id": "mxcaxy00rgq8",
@@ -117,15 +126,6 @@
       "prio": "media",
       "due": "2026-11-30",
       "project": "tm4gqq7ksiz4"
-    },
-    {
-      "id": "mogltoq7pzfg",
-      "col": "doing",
-      "title": "Artigo IGI",
-      "desc": "Verificar demandas sobre o Artigo IGI",
-      "prio": "media",
-      "due": "2026-11-15",
-      "project": "za4qxj5jzp03"
     }
   ]
 }
